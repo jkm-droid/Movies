@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Movies</string>
+    <string name="button">Button</string>
+    <string name="load_movies">Load Movies</string>
+    <string name="movie_name">movie_name</string>
+    <string name="movie_year">movie_year</string>
+    <string name="movie_genre">movie_genre</string>
+
+</resources>
