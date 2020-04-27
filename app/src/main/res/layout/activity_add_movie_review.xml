@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/single_movie_background"
+    tools:context=".AddMovieReview">
+
+    <LinearLayout
+        android:id="@+id/linearlayout_review"
+        android:orientation="vertical"
+        android:layout_margin="20dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textview_movie_title"
+            android:text="@string/movie_title_review"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:textColor="@color/colorButton3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/display_message"
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"
+            android:text="@string/welcome_you_can_add_you_movie_review_and_rating_below_thank_you"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/edittext_review"
+            android:hint="@string/enter_your_movie_review"
+            android:inputType="textMultiLine"
+            android:maxLines="10"
+            android:minLines="6"
+            android:lines="6"
+            android:scrollbars="vertical"
+            android:background="@drawable/edittext"
+            android:gravity="top"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/edittext_rating"
+            android:inputType="number"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edittext"
+            android:hint="@string/enter_your_rating_1_10"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/button_submit"
+        android:text="@string/submit"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/button_3"
+        android:layout_below="@id/linearlayout_review"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

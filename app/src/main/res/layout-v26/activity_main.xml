@@ -55,7 +55,6 @@
     <TableLayout
         android:id="@+id/tablelayout"
         android:layout_below="@id/framelayout"
-        style="?android:buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -73,19 +72,17 @@
 
             <Button
                 android:id="@+id/latest_movies"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_1"
                 android:layout_weight="1"
-                android:layout_marginRight="2dp"
                 android:text="@string/latest_movies"
                 android:layout_marginEnd="2dp" />
 
             <Button
                 android:id="@+id/top_movies"
                 android:layout_weight="1"
-                android:layout_marginLeft="2dp"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_1"
                 android:text="@string/top_movies"
@@ -98,8 +95,7 @@
             <Button
                 android:id="@+id/action_movies"
                 android:layout_weight="1"
-                android:layout_marginRight="2dp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_2"
                 android:text="@string/action_movies"
@@ -108,8 +104,7 @@
             <Button
                 android:id="@+id/romantic_movies"
                 android:layout_weight="1"
-                android:layout_marginLeft="2dp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_2"
                 android:text="@string/romantic_movies"
@@ -121,20 +116,18 @@
             <Button
                 android:id="@+id/scifi_movies"
                 android:layout_weight="1"
-                android:layout_marginRight="2dp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_3"
+                android:background="@color/colorButton3"
                 android:text="@string/scifi_movies"
                 android:layout_marginEnd="2dp" />
 
             <Button
                 android:id="@+id/random_movies"
                 android:layout_weight="1"
-                android:layout_marginLeft="2dp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_3"
+                android:background="@color/colorButton3"
                 android:text="@string/random_movies"
                 android:layout_marginStart="2dp" />
 
@@ -144,20 +137,18 @@
             <Button
                 android:id="@+id/animation_movies"
                 android:layout_weight="1"
-                android:layout_marginRight="2dp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_4"
+                android:background="@color/colorButton4"
                 android:text="@string/animation"
                 android:layout_marginEnd="2dp" />
 
             <Button
                 android:id="@+id/horror_movies"
                 android:layout_weight="1"
-                android:layout_marginLeft="2dp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_4"
+                android:background="@color/colorButton4"
                 android:text="@string/horror_movies"
                 android:layout_marginStart="2dp" />
 
