@@ -29,9 +29,9 @@ public class SingleMovie extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_movie);
-        /**
-         * initialize all the textviews from the activity
-         * **/
+        /*
+          initialize all the textviews from the activity
+          **/
         TextView title,year,duration,rating,votes,metascore, gross, story, genre, synopsis;
         ImageView movie_banner = findViewById(R.id.imageViewMovie);
 
@@ -46,9 +46,9 @@ public class SingleMovie extends AppCompatActivity {
         story = findViewById(R.id.textview_movie_story);
         synopsis = findViewById(R.id.textview_synopsis);
 
-        /**
-         * receive all the data from the MoviesPage class
-         * **/
+        /*
+          receive all the data from the MoviesPage class
+          **/
         Intent intent = getIntent();
         String movie_year, movie_duration, movie_rating,movie_votes;
         String movie_gross, movie_metascore, movie_genre, movie_story, movie_image_url;
@@ -64,18 +64,18 @@ public class SingleMovie extends AppCompatActivity {
         movie_image_url = intent.getStringExtra("MOVIE_POSTER");
         movie_story = intent.getStringExtra("MOVIE_STORY");
 
-        /**
-         * set the action bar to the MovieReviewer/ActivityName
-         * */
+        /*
+          set the action bar to the MovieReviewer/ActivityName
+          */
         CharSequence activity_title = intent.getCharSequenceExtra("ACTIVITY_TITLE");
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle("MovieReviewer/"+activity_title);
 
-        /**
-         * get the ratingbar from the activity and set a new
-         * rating depending on the current rating
-         * **/
+        /*
+          get the rating bar from the activity and set a new
+          rating depending on the current rating
+          **/
         assert movie_rating != null;
         double rating_no = Double.parseDouble(movie_rating);
         RatingBar ratingBar = findViewById(R.id.rating_bar_single);
@@ -90,9 +90,9 @@ public class SingleMovie extends AppCompatActivity {
         }
 
 
-        /**
-         * append the strings to the individual textviews
-         * **/
+        /*
+          append the strings to the individual textviews
+          **/
         title.setText(movie_title);
         year.setText("Release: "+movie_year);
         duration.setText("Time: "+movie_duration+"min");
@@ -105,9 +105,9 @@ public class SingleMovie extends AppCompatActivity {
         synopsis.setText("Movie Synopsis");
         story.setText(movie_story);
 
-        /**
-         * loading into the view using picasso library
-         * */
+        /*
+          loading into the view using picasso library
+          */
         Picasso.get()
                 .load(movie_image_url)
                 .into(movie_banner);

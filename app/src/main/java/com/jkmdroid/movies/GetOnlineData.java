@@ -39,9 +39,9 @@ public class GetOnlineData {
             connection.setDoOutput(true);
 
 
-            /**
-             * writing data to the server
-             * **/
+            /*
+              writing data to the server
+              **/
             OutputStreamWriter outputStreamWriter;
             BufferedWriter bufferedWriter;
             String charset  = "UTF-8";
@@ -66,11 +66,11 @@ public class GetOnlineData {
         InputStream inputStream;
         BufferedReader br;
 
-        /**
-         * check whether the server response code is correct
-         * then get the data from the server
-         * return the data as a string
-         * **/
+        /*
+          check whether the server response code is correct
+          then get the data from the server
+          return the data as a string
+          **/
         assert connection != null;
         int response_code = connection.getResponseCode();
 
@@ -87,9 +87,9 @@ public class GetOnlineData {
 
         }
 
-        /**
-         * close all the connections after getting the data
-         * */
+        /*
+          close all the connections after getting the data
+          */
         br.close();
         inputStream.close();
         connection.disconnect();

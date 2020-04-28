@@ -116,9 +116,9 @@ public class MoviesPage extends AppCompatActivity {
         }
 
 
-        /**
-         * thread for handling the heavy task of getting movies from server
-         * **/
+        /*
+          thread for handling the heavy task of getting movies from server
+          **/
         final CheckNetworkStatus networkStatus = new CheckNetworkStatus();
 
 
@@ -127,10 +127,10 @@ public class MoviesPage extends AppCompatActivity {
             @Override
             public void run() {
                 super.run();
-                /**
-                 * first check whether the device has internet connection before sending
-                 * request to the server
-                 * */
+                /*
+                  first check whether the device has internet connection before sending
+                  request to the server
+                  */
                 if(networkStatus.isNetworkAvailable(getApplicationContext())) {
 
                     try {
@@ -139,20 +139,20 @@ public class MoviesPage extends AppCompatActivity {
                         progressBar = findViewById(R.id.progressbar);
                         progressBar.setVisibility(View.VISIBLE);
 
-                        /**
-                         * download movies from the link suing the GetOnlineDate class
-                         * and one of its method
-                         * **/
+                        /*
+                          download movies from the link suing the GetOnlineDate class
+                          and one of its method
+                          **/
                         String movies_url = "http://movieapi.mblog.co.ke/getdata.php";
                         String response = GetOnlineData.downloadMovies(movies_url, data);
 
                         Message msg;
                         msg = handler.obtainMessage();
 
-                        /**
-                         * prepare the data and send it to the handle
-                         * for display in the movies_row_background
-                         * ***/
+                        /*
+                          prepare the data and send it to the handle
+                          for display in the movies_row_background
+                          ***/
                         Bundle bundle = new Bundle();
                         bundle.putString("RESPONSE", response);
                         msg.arg1 = 200;//ok message code
@@ -177,11 +177,11 @@ public class MoviesPage extends AppCompatActivity {
         thread.start();
 
 
-        /**
-         * code logic for handling all the messages from the thread
-         * it first checks whether the message code is correct and then
-         * gets the data in string format
-         * **/
+        /*
+          code logic for handling all the messages from the thread
+          it first checks whether the message code is correct and then
+          gets the data in string format
+          **/
 
         handler = new Handler(){
             @Override
@@ -196,12 +196,12 @@ public class MoviesPage extends AppCompatActivity {
                     String response = bundle.getString("RESPONSE");
 
                     try {
-                        /**
-                         * get the json object from the link, get the json array inside
-                         * the json object
-                         * loop through the specific array elements to get them
-                         * e.g title, year etc
-                         * **/
+                        /*
+                          get the json object from the link, get the json array inside
+                          the json object
+                          loop through the specific array elements to get them
+                          e.g title, year etc
+                          **/
                         assert response != null;
                         JSONObject moviesObject = new JSONObject(response);
                         JSONArray moviesArray = moviesObject.getJSONArray("movies");
@@ -219,9 +219,9 @@ public class MoviesPage extends AppCompatActivity {
                             JSONObject jsonObject = moviesArray.getJSONObject(i);
 
                             movieSetterGetter = new MovieSetterGetter();
-                            /**
-                             * change the rating, metascore, and votes
-                             * */
+                            /*
+                              change the rating, metascore, and votes
+                              */
                             //changing votes
                             String s_votes = jsonObject.getString("votes");
                             int votes = Integer.parseInt(s_votes);
@@ -276,27 +276,27 @@ public class MoviesPage extends AppCompatActivity {
 
                         }
 
-                        /**
-                         * populate the data into the movies_row_background and render it to
-                         * the user
-                         * **/
+                        /*
+                          populate the data into the movies_row_background and render it to
+                          the user
+                          **/
                         ListView listView = findViewById(R.id.listview_movies);
                         MovieAdapter arrayAdapter = new MovieAdapter(MoviesPage.this, arrayListMovies );
                         listView.setAdapter(arrayAdapter);
 
-                        /**
-                         * make the movies_row_background clickable
-                         * on clicking, direct the user to new activity
-                         * pass the specific movie data using intent to the
-                         * next activity
-                         * */
+                        /*
+                          make the movies_row_background clickable
+                          on clicking, direct the user to new activity
+                          pass the specific movie data using intent to the
+                          next activity
+                          */
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                                /**
-                                 * collect the specific data from the arraylist
-                                 * **/
+                                /*
+                                  collect the specific data from the arraylist
+                                  **/
                                 String movie_title = arrayListMovies.get(position).getTitle();
                                 String movie_year = arrayListMovies.get(position).getYear();
                                 String movie_duration = arrayListMovies.get(position).getDuration();
@@ -308,18 +308,18 @@ public class MoviesPage extends AppCompatActivity {
                                 String movie_image = arrayListMovies.get(position).getMovie_poster();
                                 String movie_story = arrayListMovies.get(position).getStory();
 
-                                /**
-                                 * get the activity actionbar
-                                 * */
+                                /*
+                                  get the activity actionbar
+                                  */
 
                                 ActionBar actionBar = getSupportActionBar();
                                 assert actionBar != null;
                                 CharSequence action_title = actionBar.getTitle();
 
                                 Intent intent = new Intent(MoviesPage.this, SingleMovie.class);
-                                /**
-                                 * pass the data to the next activity
-                                 * **/
+                                /*
+                                  pass the data to the next activity
+                                  **/
                                 intent.putExtra("ACTIVITY_TITLE", action_title);
                                 intent.putExtra("MOVIE_TITLE", movie_title);
                                 intent.putExtra("MOVIE_YEAR", movie_year);
