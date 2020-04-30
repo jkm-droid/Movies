@@ -17,7 +17,7 @@ import java.net.URLEncoder;
  * **/
 public class PostOnlineData {
 
-     static String uploadOnlineData(String movie_url, String movie_review, String movie_rating) throws IOException{
+     static String uploadOnlineData(String movie_url, String movie_title, String movie_review, String movie_rating) throws IOException{
 
         /*
           open connection to the server,post the data to the
@@ -30,18 +30,25 @@ public class PostOnlineData {
         httpURLConnection = (HttpURLConnection)url.openConnection();
         httpURLConnection.setConnectTimeout(15000);
         httpURLConnection.setReadTimeout(15000);
+        httpURLConnection.setRequestMethod("POST");
         httpURLConnection.setDoOutput(true);
         httpURLConnection.setDoInput(true);
 
         String charset = "UTF-8";
 
+        /*
+         * writing the data to the server
+         * **/
         OutputStream outputStream = httpURLConnection.getOutputStream();
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, charset);
         BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-        String post_data = URLEncoder.encode("movie_review", charset)+"="+URLEncoder.encode(movie_review, charset)+"&"+
-                URLEncoder.encode("movie_rating", charset)+"="+URLEncoder.encode(movie_rating, charset);
+        String post_data = URLEncoder.encode("movie_title", charset)+"="+URLEncoder.encode(movie_title, charset)+"&"+
+                URLEncoder.encode("movie_rating", charset)+"="+URLEncoder.encode(movie_rating, charset)+"&"+
+                URLEncoder.encode("movie_review", charset)+"="+URLEncoder.encode(movie_review, charset);
 
         bufferedWriter.write(post_data);
+
+        System.out.println("---------------"+post_data+"----------------");
 
         bufferedWriter.flush();
         bufferedWriter.close();

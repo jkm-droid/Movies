@@ -42,5 +42,6 @@
     <string name="enter_your_rating_1_10">Enter your rating (1-10)</string>
     <string name="submit">submit</string>
     <string name="movie_title_review">Movie Title Review</string>
+    <string name="view_reviews">view reviews</string>
 
 </resources>

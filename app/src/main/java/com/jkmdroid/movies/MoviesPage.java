@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,11 +35,24 @@ import java.util.ArrayList;
 
 public class MoviesPage extends AppCompatActivity {
     static Handler handler = new Handler();
+    ProgressBar progressBar;
+    ListView listView;
     String data;
     String button_latest_movies, button_top_movies, button_action_movies;
     String button_romantic_movies, button_scifi_movies, button_random_movies;
     String button_horror_movies, button_animation;
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        int id = item.getItemId();
+        if (id == android.R.id.home){
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -43,6 +60,11 @@ public class MoviesPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
 
+        listView = findViewById(R.id.listview_movies);
+        progressBar = findViewById(R.id.progressbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //get the data passed from the main activity
         Intent intent = getIntent();
         button_latest_movies = intent.getStringExtra("BUTTON_NAME");
         button_top_movies = intent.getStringExtra("BUTTON_NAME");
@@ -115,38 +137,31 @@ public class MoviesPage extends AppCompatActivity {
             }
         }
 
+        progressBar.setVisibility(View.VISIBLE);
 
         /*
           thread for handling the heavy task of getting movies from server
           **/
-        final CheckNetworkStatus networkStatus = new CheckNetworkStatus();
 
+            final Thread thread = new Thread() {
+                Message msg;
 
-        final Thread thread = new Thread() {
-
-            @Override
-            public void run() {
-                super.run();
+                @Override
+                public void run() {
+                    super.run();
                 /*
                   first check whether the device has internet connection before sending
                   request to the server
                   */
-                if(networkStatus.isNetworkAvailable(getApplicationContext())) {
 
                     try {
-
-                        ProgressBar progressBar;
-                        progressBar = findViewById(R.id.progressbar);
-                        progressBar.setVisibility(View.VISIBLE);
-
                         /*
                           download movies from the link suing the GetOnlineDate class
                           and one of its method
                           **/
                         String movies_url = "http://movieapi.mblog.co.ke/getdata.php";
                         String response = GetOnlineData.downloadMovies(movies_url, data);
-
-                        Message msg;
+                        //obtain the message
                         msg = handler.obtainMessage();
 
                         /*
@@ -161,20 +176,13 @@ public class MoviesPage extends AppCompatActivity {
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                        msg.arg2 = 300;
+                        System.out.println("-------------------"+e+"------------------------");
                     }
 
-                }else{
-                    //send an error message to the handler
-                    //when the device has not internet connection
-                    Message msg;
-                    msg = handler.obtainMessage();
-                    msg.arg2 = 300;//error message code
-                    handler.sendMessage(msg);
                 }
-
-            }
-        };
-        thread.start();
+            };
+            thread.start();
 
 
         /*
@@ -183,106 +191,104 @@ public class MoviesPage extends AppCompatActivity {
           gets the data in string format
           **/
 
-        handler = new Handler(){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
+            handler = new Handler() {
+                @Override
+                public void handleMessage(@NonNull Message msg) {
+                    super.handleMessage(msg);
 
-                if (msg.arg1 == 200){
-                    ProgressBar progressBar;
-                    progressBar = findViewById(R.id.progressbar);
-                    progressBar.setVisibility(View.GONE);
-                    Bundle bundle = msg.getData();
-                    String response = bundle.getString("RESPONSE");
+                    //check if the message code is okay and proceed
+                    if (msg.arg1 == 200) {
+                        //dismiss the progress bar
+                        progressBar.setVisibility(View.GONE);
 
-                    try {
+                        Bundle bundle = msg.getData();
+                        String response = bundle.getString("RESPONSE");
+
+                        try {
                         /*
                           get the json object from the link, get the json array inside
                           the json object
                           loop through the specific array elements to get them
                           e.g title, year etc
                           **/
-                        assert response != null;
-                        JSONObject moviesObject = new JSONObject(response);
-                        JSONArray moviesArray = moviesObject.getJSONArray("movies");
+                            assert response != null;
+                            JSONObject moviesObject = new JSONObject(response);
+                            JSONArray moviesArray = moviesObject.getJSONArray("movies");
 
-                        int length = moviesArray.length();
-                        final ArrayList<MovieSetterGetter> arrayListMovies = new ArrayList<>();
-                        MovieSetterGetter movieSetterGetter;
-                        int n_votes;
-                        int n_metascore;
-                        double n_rating;
+                            int length = moviesArray.length();
+                            final ArrayList<MovieSetterGetter> arrayListMovies = new ArrayList<>();
+                            MovieSetterGetter movieSetterGetter;
+                            int n_votes;
+                            int n_metascore;
+                            double n_rating;
 
 
-                        for(int i = 0; i < length; i++){
+                            for (int i = 0; i < length; i++) {
 
-                            JSONObject jsonObject = moviesArray.getJSONObject(i);
+                                JSONObject jsonObject = moviesArray.getJSONObject(i);
 
-                            movieSetterGetter = new MovieSetterGetter();
+                                movieSetterGetter = new MovieSetterGetter();
                             /*
                               change the rating, metascore, and votes
                               */
-                            //changing votes
-                            String s_votes = jsonObject.getString("votes");
-                            int votes = Integer.parseInt(s_votes);
+                                //changing votes
+                                String s_votes = jsonObject.getString("votes");
+                                int votes = Integer.parseInt(s_votes);
 
-                            if(s_votes.length() <= 5){
+                                if (s_votes.length() <= 5) {
+                                    n_votes = votes + 145;
 
-                                n_votes = votes+145;
+                                } else {
+                                    n_votes = votes + 45;
+                                }
 
-                            }else{
 
-                                n_votes = votes+45;
+                                //change the metascore
+                                String s_metascore = jsonObject.getString("metascore");
+                                int metascore = Integer.parseInt(s_metascore);
+
+                                if (metascore > 70) {
+                                    n_metascore = metascore - 3;
+                                } else {
+                                    n_metascore = metascore + 3;
+                                }
+
+                                //change the rating
+                                String s_rating = jsonObject.getString("rating");
+                                double rating = Double.parseDouble(s_rating);
+                                DecimalFormat df = new DecimalFormat("#0.0");
+                                df.setRoundingMode(RoundingMode.DOWN);
+
+
+                                if (rating >= 8) {
+                                    n_rating = rating - 0.1;
+
+                                } else {
+                                    n_rating = rating + 0.1;
+
+                                }
+
+                                movieSetterGetter.setTitle(jsonObject.getString("title"));
+                                movieSetterGetter.setYear(jsonObject.getString("year"));
+                                movieSetterGetter.setDuration(jsonObject.getString("duration"));
+                                movieSetterGetter.setRating(df.format(n_rating));
+                                movieSetterGetter.setVotes(String.valueOf(n_votes));
+                                movieSetterGetter.setMetascore(String.valueOf(n_metascore));
+                                movieSetterGetter.setGross(jsonObject.getString("gross"));
+                                movieSetterGetter.setGenre(jsonObject.getString("genre"));
+                                movieSetterGetter.setMovie_poster(jsonObject.getString("image"));
+                                movieSetterGetter.setStory(jsonObject.getString("story"));
+
+                                arrayListMovies.add(movieSetterGetter);
+
                             }
-
-
-                            //change the metascore
-                            String s_metascore = jsonObject.getString("metascore");
-                            int metascore = Integer.parseInt(s_metascore);
-
-                            if (metascore > 70){
-                                n_metascore = metascore - 3;
-                            }else {
-                                n_metascore = metascore + 3;
-                            }
-
-                            //change the rating
-                            String s_rating =  jsonObject.getString("rating");
-                            double rating = Double.parseDouble(s_rating);
-                            DecimalFormat df = new DecimalFormat("#0.0");
-                            df.setRoundingMode(RoundingMode.DOWN);
-
-
-                            if (rating >= 8){
-                                n_rating = rating - 0.1;
-
-                            }else {
-                                n_rating = rating + 0.1;
-
-                            }
-
-                            movieSetterGetter.setTitle(jsonObject.getString("title"));
-                            movieSetterGetter.setYear(jsonObject.getString("year"));
-                            movieSetterGetter.setDuration(jsonObject.getString("duration"));
-                            movieSetterGetter.setRating(df.format(n_rating));
-                            movieSetterGetter.setVotes(String.valueOf(n_votes));
-                            movieSetterGetter.setMetascore(String.valueOf(n_metascore));
-                            movieSetterGetter.setGross(jsonObject.getString("gross"));
-                            movieSetterGetter.setGenre(jsonObject.getString("genre"));
-                            movieSetterGetter.setMovie_poster(jsonObject.getString("image"));
-                            movieSetterGetter.setStory(jsonObject.getString("story"));
-
-                            arrayListMovies.add(movieSetterGetter);
-
-                        }
 
                         /*
                           populate the data into the movies_row_background and render it to
                           the user
                           **/
-                        ListView listView = findViewById(R.id.listview_movies);
-                        MovieAdapter arrayAdapter = new MovieAdapter(MoviesPage.this, arrayListMovies );
-                        listView.setAdapter(arrayAdapter);
+                            MovieAdapter arrayAdapter = new MovieAdapter(MoviesPage.this, arrayListMovies);
+                            listView.setAdapter(arrayAdapter);
 
                         /*
                           make the movies_row_background clickable
@@ -290,64 +296,64 @@ public class MoviesPage extends AppCompatActivity {
                           pass the specific movie data using intent to the
                           next activity
                           */
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                                 /*
                                   collect the specific data from the arraylist
                                   **/
-                                String movie_title = arrayListMovies.get(position).getTitle();
-                                String movie_year = arrayListMovies.get(position).getYear();
-                                String movie_duration = arrayListMovies.get(position).getDuration();
-                                String movie_rating = arrayListMovies.get(position).getRating();
-                                String movie_votes = arrayListMovies.get(position).getVotes();
-                                String movie_metascore = arrayListMovies.get(position).getMetascore();
-                                String movie_gross = arrayListMovies.get(position).getGross();
-                                String movie_genre = arrayListMovies.get(position).getGenre();
-                                String movie_image = arrayListMovies.get(position).getMovie_poster();
-                                String movie_story = arrayListMovies.get(position).getStory();
+                                    String movie_title = arrayListMovies.get(position).getTitle();
+                                    String movie_year = arrayListMovies.get(position).getYear();
+                                    String movie_duration = arrayListMovies.get(position).getDuration();
+                                    String movie_rating = arrayListMovies.get(position).getRating();
+                                    String movie_votes = arrayListMovies.get(position).getVotes();
+                                    String movie_metascore = arrayListMovies.get(position).getMetascore();
+                                    String movie_gross = arrayListMovies.get(position).getGross();
+                                    String movie_genre = arrayListMovies.get(position).getGenre();
+                                    String movie_image = arrayListMovies.get(position).getMovie_poster();
+                                    String movie_story = arrayListMovies.get(position).getStory();
 
                                 /*
                                   get the activity actionbar
                                   */
 
-                                ActionBar actionBar = getSupportActionBar();
-                                assert actionBar != null;
-                                CharSequence action_title = actionBar.getTitle();
+                                    ActionBar actionBar = getSupportActionBar();
+                                    assert actionBar != null;
+                                    CharSequence action_title = actionBar.getTitle();
 
-                                Intent intent = new Intent(MoviesPage.this, SingleMovie.class);
+                                    Intent intent = new Intent(MoviesPage.this, SingleMovie.class);
                                 /*
                                   pass the data to the next activity
                                   **/
-                                intent.putExtra("ACTIVITY_TITLE", action_title);
-                                intent.putExtra("MOVIE_TITLE", movie_title);
-                                intent.putExtra("MOVIE_YEAR", movie_year);
-                                intent.putExtra("MOVIE_DURATION", movie_duration);
-                                intent.putExtra("MOVIE_RATING", movie_rating);
-                                intent.putExtra("MOVIE_VOTES", movie_votes);
-                                intent.putExtra("MOVIE_METASCORE", movie_metascore);
-                                intent.putExtra("MOVIE_GROSS", movie_gross);
-                                intent.putExtra("MOVIE_GENRE", movie_genre);
-                                intent.putExtra("MOVIE_POSTER", movie_image);
-                                intent.putExtra("MOVIE_STORY", movie_story);
-                                startActivity(intent);
-                            }
-                        });
+                                    intent.putExtra("ACTIVITY_TITLE", action_title);
+                                    intent.putExtra("MOVIE_TITLE", movie_title);
+                                    intent.putExtra("MOVIE_YEAR", movie_year);
+                                    intent.putExtra("MOVIE_DURATION", movie_duration);
+                                    intent.putExtra("MOVIE_RATING", movie_rating);
+                                    intent.putExtra("MOVIE_VOTES", movie_votes);
+                                    intent.putExtra("MOVIE_METASCORE", movie_metascore);
+                                    intent.putExtra("MOVIE_GROSS", movie_gross);
+                                    intent.putExtra("MOVIE_GENRE", movie_genre);
+                                    intent.putExtra("MOVIE_POSTER", movie_image);
+                                    intent.putExtra("MOVIE_STORY", movie_story);
+                                    startActivity(intent);
+                                }
+                            });
 
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        //dismiss the progress bar
+                        progressBar.setVisibility(View.GONE);
+                        //show the error message via snack bar
+                        Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_movies),"An error occurred", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     }
-
-                }else if(msg.arg2 == 300){
-
-                    Toast.makeText(getApplicationContext(), "No internet connectivity", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(MoviesPage.this,MainActivity.class);
-                    startActivity(intent);
                 }
-            }
-        };
+            };
 
     }
 }

@@ -1,16 +1,19 @@
 package com.jkmdroid.movies;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -24,11 +27,25 @@ public class SingleMovie extends AppCompatActivity {
 
     String movie_title;
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home){
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_movie);
+
+        //setting the back button on the actionbar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         /*
           initialize all the textviews from the activity
           **/
@@ -113,7 +130,9 @@ public class SingleMovie extends AppCompatActivity {
                 .into(movie_banner);
 
 
-        Button add_movie_review = findViewById(R.id.button_addreview);
+        Button add_movie_review, view_movie_review;
+        add_movie_review = findViewById(R.id.button_addreview);
+        view_movie_review = findViewById(R.id.button_viewreviews);
         add_movie_review.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +141,20 @@ public class SingleMovie extends AppCompatActivity {
             }
         });
 
+        view_movie_review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               move_to_view_reviews_activity();
+            }
+        });
+
+    }
+
+    private void move_to_view_reviews_activity() {
+        //move to the ViewMovieReviews activity
+        //Intent intent = new Intent(SingleMovie.this, )
+        Toast.makeText(SingleMovie.this, "Coming soon", Toast.LENGTH_SHORT).show();
     }
 
     private void move_to_add_review_activity() {
